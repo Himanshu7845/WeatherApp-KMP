@@ -7,7 +7,7 @@ import org.koin.dsl.module
 actual fun platformModule() = module {
     single {
         Room.databaseBuilder(
-            get(), // this is android Context injected by `androidContext(this)`
+            get(),
             AppDatabase::class.java,
             "weather.db"
         ).build()

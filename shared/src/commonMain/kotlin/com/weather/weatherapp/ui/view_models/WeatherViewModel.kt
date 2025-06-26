@@ -38,6 +38,7 @@ class WeatherViewModel(
                     }
 
                     RestClientResult.Status.SUCCESS -> {
+                        println("UISTATE--${result.data?.currentWeather?.winddirection},${result.data?.currentWeather?.windspeed}")
                         _uiState.value = _uiState.value.copy(
                             isLoading = false,
                             data = result.data
@@ -66,6 +67,9 @@ class WeatherViewModel(
         }
     }
 
+
+
+
     fun launchWithHandlingException(
         handler: (CoroutineContext, Throwable) -> Unit,
         block: suspend CoroutineScope.() -> Unit,
@@ -78,6 +82,17 @@ class WeatherViewModel(
     }
 }
 
+fun getWeatherTypeFromCode(code: Int): String = when (code) {
+    0 -> "Clear"
+    1, 2, 3 -> "Cloudy"
+    in 45..48 -> "Foggy"
+    in 51..67 -> "Rainy"
+    in 71..77 -> "Snowy"
+    in 80..82 -> "Rainy"
+    95 -> "Thunderstorm"
+    in 96..99 -> "Thunderstorm with Hail"
+    else -> "Unknown"
+}
 
 data class UiState(
     val isLoading: Boolean = false,
