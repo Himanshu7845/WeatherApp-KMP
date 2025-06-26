@@ -8,6 +8,7 @@ object NetworkErrorMessages {
     const val BAD_REQUEST = "Bad request"
     const val SOME_ERROR_OCCURRED = "Something went wrong"
     const val APP_UNDER_MAINTENANCE = "App under maintenance"
+    const val NO_INTERNET_CONNECTION = "No Internet Connection"
 }
 object NetworkErrorCodes {
     const val BAD_REQUEST = 400

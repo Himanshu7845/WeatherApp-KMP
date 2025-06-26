@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 class WeatherLocalRepositoryImpl(private val weatherDao: WeatherDao): WeatherLocalDataRepository {
     override suspend fun insertGrowth(entity: WeatherEntity): Long {
+
        return weatherDao.insertWeatherData(entity)
     }
 
@@ -14,6 +15,7 @@ class WeatherLocalRepositoryImpl(private val weatherDao: WeatherDao): WeatherLoc
         return  weatherDao.fetchWeather()
 
     }
-
-
+    override suspend fun clearDataBase(){
+          weatherDao.clearDataBase()
+    }
 }

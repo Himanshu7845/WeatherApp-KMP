@@ -18,8 +18,18 @@ class GetWeatherUseCase(private val weatherRepository: WeatherRepository,private
             emit(RestClientResult.idle())
         }
 
-    /** get weather details from local database. */
+    /** insert weather details from local database. */
     suspend fun insertWeatherDataInRoom(entity: WeatherEntity): Long {
         return weatherLocalDataRepository.insertGrowth(entity)
+
+    }
+    /** clear weather details from local database. */
+    suspend fun clearData() {
+        return weatherLocalDataRepository.clearDataBase()
+    }
+
+    /** get weather details from local database. */
+    suspend fun getWeatherDetailsFromLocal(): Flow<List<WeatherEntity>> {
+        return weatherLocalDataRepository.fetchWeather()
     }
 }

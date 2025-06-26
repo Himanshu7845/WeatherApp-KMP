@@ -1,5 +1,6 @@
 package com.weather.weatherapp.utils
 
+import com.weather.weatherapp.utils.NetworkErrorMessages.NO_INTERNET_CONNECTION
 import io.ktor.client.call.body
 import io.ktor.client.network.sockets.SocketTimeoutException
 import io.ktor.client.plugins.ClientRequestException
@@ -30,20 +31,24 @@ abstract class BaseDataSource {
                     .find(errorJson)
                     ?.groupValues?.get(1)
                     ?: NetworkErrorMessages.SOME_ERROR_OCCURRED
-
+                println("Exception--${message}")
                 RestClientResult.error(
                     errorMessage = message.ifBlank { NetworkErrorMessages.SOME_ERROR_OCCURRED },
                     errorCode = result.status.value,
                 )
             }
-        } catch (e: ClientRequestException) {
+        }
+        catch (e: ClientRequestException) {
             val errorBody =
                 try {
                     e.response.body<ErrorResponse>()
                 } catch (ex: Exception) {
+
                     null
                 }
+
             return when (val statusCode = e.response.status.value) {
+
 
                 NetworkErrorCodes.BAD_REQUEST -> {
 
@@ -60,6 +65,7 @@ abstract class BaseDataSource {
                 }
 
                 else -> {
+                    println("Error--${e.message}")
                     RestClientResult.error(
                         errorMessage = e.message,
                         errorCode = NetworkErrorCodes.UNKNOWN_ERROR_OCCURRED,
@@ -74,7 +80,7 @@ abstract class BaseDataSource {
             )
         } catch (e: IOException) {
             RestClientResult.error(
-                errorMessage = e.message.toString(),
+                errorMessage = NO_INTERNET_CONNECTION,
                 errorCode = NetworkErrorCodes.INTERNET_NOT_WORKING,
             )
         }  catch (e: SocketTimeoutException) {

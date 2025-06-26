@@ -14,4 +14,7 @@ interface WeatherDao {
     @Query("select * from Weather")
     fun fetchWeather(): Flow<List<WeatherEntity>>
 
+    @Query("Delete from Weather")
+    suspend fun clearDataBase()
+
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.weather.weatherapp.data.local.WeatherEntity
 import com.weather.weatherapp.data.model.WeatherResponse
 import com.weather.weatherapp.domain.use_cases.GetWeatherUseCase
+import com.weather.weatherapp.utils.NetworkErrorMessages.NO_INTERNET_CONNECTION
 import com.weather.weatherapp.utils.RestClientResult
 import com.weather.weatherapp.utils.common
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -13,6 +14,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
@@ -25,8 +30,7 @@ class WeatherViewModel(
     val uiState = _uiState.asStateFlow().common()
 
 
-    fun getWeather(lat: Double, lon: Double)  {
-        println("LatLngVM-->$lat,$lon")
+    fun getWeather(lat: Double, lon: Double, cityName: String?)  {
         launchWithHandlingException({ _, throwable ->
             println("API Call Failed or No More Data $throwable")
         }) {
@@ -34,28 +38,52 @@ class WeatherViewModel(
             getWeatherUseCase.getWeather(lat,lon).collect { result ->
                 when (result.status) {
                     RestClientResult.Status.LOADING -> {
-                        _uiState.value = _uiState.value.copy(isLoading = true)
+                        _uiState.value = _uiState.value.copy(isLoading = true,error="")
                     }
 
                     RestClientResult.Status.SUCCESS -> {
-                        println("UISTATE--${result.data?.currentWeather?.winddirection},${result.data?.currentWeather?.windspeed}")
                         _uiState.value = _uiState.value.copy(
                             isLoading = false,
                             data = result.data
                         )
                         result.data?.let {
+                            getWeatherUseCase.clearData()
                             getWeatherUseCase.insertWeatherDataInRoom(WeatherEntity(
-                                latitude = it.latitude?:0.0,
-                                longitude =  it.longitude?:0.0,
-                                date = 10L,
-                                currentWeatherTemperature = "27"
+                                cityName = cityName ?: "",
+                                weatherCode = it.currentWeather?.weathercode?:0,
+                                windSpeed = it.currentWeather?.windspeed ?: 0.0,
+                                windDirection = it.currentWeather?.winddirection ?: 0,
+                                temperature = it.currentWeather?.temperature ?: 0.0,
                             ))
                         }
                     }
 
                     RestClientResult.Status.ERROR -> {
                         if (!result.errorMessage.isNullOrEmpty()) {
-                            _uiState.value = _uiState.value.copy(isLoading = false)
+                            if(result.errorMessage==NO_INTERNET_CONNECTION){
+                                getWeatherUseCase.getWeatherDetailsFromLocal().onStart {
+                                    _uiState.value = _uiState.value.copy(isLoading = true,error="")
+                                }.onEach {
+                                    if(it.isNotEmpty()){
+                                        _uiState.value = _uiState.value.copy(
+                                            isLoading = false,
+                                            dataFromLocal = it
+                                        )
+                                    }
+                                    else{
+                                        _uiState.value = _uiState.value.copy(
+                                            isLoading = false,
+                                            error = "No data available in Local database fetch from internet"
+                                        )
+                                    }
+                                }.catch { throwable->
+                                    _uiState.value = _uiState.value.copy(isLoading = false,error=throwable.message.toString())
+                                }.collect()
+                            }
+                            else{
+                                _uiState.value = _uiState.value.copy(isLoading = false,error=result.errorMessage)
+                            }
+
                         }
                     }
 
@@ -66,9 +94,6 @@ class WeatherViewModel(
             }
         }
     }
-
-
-
 
     fun launchWithHandlingException(
         handler: (CoroutineContext, Throwable) -> Unit,
@@ -97,5 +122,6 @@ fun getWeatherTypeFromCode(code: Int): String = when (code) {
 data class UiState(
     val isLoading: Boolean = false,
     val data: WeatherResponse? = null,
+    val dataFromLocal: List<WeatherEntity>? = null,
     val error: String = ""
 )

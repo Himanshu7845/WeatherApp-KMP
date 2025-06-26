@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "366a63e921897434b2eb4fb21995c8bb",
+    "identityHash": "73359472058c60c00b1943d1973024c9",
     "entities": [
       {
         "tableName": "Weather",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `date` INTEGER NOT NULL, `currentWeatherTemperature` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `cityName` TEXT NOT NULL, `temperature` REAL NOT NULL, `weatherCode` INTEGER NOT NULL, `windSpeed` REAL NOT NULL, `windDirection` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -15,27 +15,33 @@
             "notNull": true
           },
           {
-            "fieldPath": "latitude",
-            "columnName": "latitude",
+            "fieldPath": "cityName",
+            "columnName": "cityName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "temperature",
+            "columnName": "temperature",
             "affinity": "REAL",
             "notNull": true
           },
           {
-            "fieldPath": "longitude",
-            "columnName": "longitude",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "date",
-            "columnName": "date",
+            "fieldPath": "weatherCode",
+            "columnName": "weatherCode",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "currentWeatherTemperature",
-            "columnName": "currentWeatherTemperature",
-            "affinity": "TEXT",
+            "fieldPath": "windSpeed",
+            "columnName": "windSpeed",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "windDirection",
+            "columnName": "windDirection",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -49,7 +55,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '366a63e921897434b2eb4fb21995c8bb')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '73359472058c60c00b1943d1973024c9')"
     ]
   }
 }
