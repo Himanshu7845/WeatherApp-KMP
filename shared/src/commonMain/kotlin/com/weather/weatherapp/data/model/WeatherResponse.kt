@@ -10,8 +10,6 @@ data class WeatherResponse(
     val currentWeather: CurrentWeather?,
     @SerialName("current_weather_units")
     val currentWeatherUnits: CurrentWeatherUnits?,
-    @SerialName("elevation")
-    val elevation: Int?,
     @SerialName("generationtime_ms")
     val generationtimeMs: Double?,
     @SerialName("latitude")

@@ -3,6 +3,7 @@ package com.weather.weatherapp.utils
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalForInheritanceCoroutinesApi
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -11,6 +12,7 @@ internal fun <T : Any> StateFlow<T>.common(): CommonStateFlow<T> = CommonStateFl
 
 class CommonCancelable(val cancel: () -> Unit)
 
+@OptIn(ExperimentalForInheritanceCoroutinesApi::class)
 class CommonStateFlow<T>(
     private val underlyingStateFlow: StateFlow<T>
 ) : StateFlow<T> {
