@@ -7,7 +7,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 
 private val viewModelModule = module {
-    single { WeatherViewModel(get(),get()) }
+    single { WeatherViewModel(get()) }
 }
 
 actual fun sharedViewModelModules(): Module = viewModelModule

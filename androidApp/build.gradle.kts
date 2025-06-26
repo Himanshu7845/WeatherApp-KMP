@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.compose.compiler)
-    kotlin("kapt")
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -47,7 +47,6 @@ dependencies {
     implementation(libs.koin.androidx.compose)
     implementation(libs.ktor.client.android)
     implementation(libs.accompanist.permissions)
-    implementation(libs.glide.compose)
-    kapt(libs.glide.processor)
+
 
 }

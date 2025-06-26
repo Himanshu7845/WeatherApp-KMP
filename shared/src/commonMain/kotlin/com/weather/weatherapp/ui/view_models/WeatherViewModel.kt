@@ -2,6 +2,7 @@ package com.weather.weatherapp.ui.view_models
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.weather.weatherapp.data.local.WeatherEntity
 import com.weather.weatherapp.data.model.WeatherResponse
 import com.weather.weatherapp.domain.use_cases.GetWeatherUseCase
 import com.weather.weatherapp.utils.RestClientResult
@@ -31,7 +32,6 @@ class WeatherViewModel(
         }) {
 
             getWeatherUseCase.getWeather(lat,lon).collect { result ->
-                println("RESULTS--$result")
                 when (result.status) {
                     RestClientResult.Status.LOADING -> {
                         _uiState.value = _uiState.value.copy(isLoading = true)
@@ -42,6 +42,14 @@ class WeatherViewModel(
                             isLoading = false,
                             data = result.data
                         )
+                        result.data?.let {
+                            getWeatherUseCase.insertWeatherDataInRoom(WeatherEntity(
+                                latitude = it.latitude?:0.0,
+                                longitude =  it.longitude?:0.0,
+                                date = 10L,
+                                currentWeatherTemperature = "27"
+                            ))
+                        }
                     }
 
                     RestClientResult.Status.ERROR -> {

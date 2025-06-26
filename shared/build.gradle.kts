@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 kotlin {
@@ -42,6 +44,8 @@ kotlin {
             implementation(libs.kotlinx.serialization)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.kotlinx.datetime)
+            implementation(libs.room.runtime)
+            implementation(libs.sqlite.bundled)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -51,6 +55,16 @@ kotlin {
         }
 
     }
+}
+room {
+    schemaDirectory("$projectDir/schemas")
+}
+dependencies {
+    // KSP support for Room Compiler.
+    add("kspAndroid", libs.room.compiler)
+    add("kspIosSimulatorArm64", libs.room.compiler)
+    add("kspIosX64", libs.room.compiler)
+    add("kspIosArm64", libs.room.compiler)
 }
 
 android {

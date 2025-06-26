@@ -4,5 +4,5 @@ import com.weather.weatherapp.domain.use_cases.GetWeatherUseCase
 import org.koin.dsl.module
 
 val domainModule = module{
-    factory { GetWeatherUseCase(get()) }
+    factory { GetWeatherUseCase(get(),get()) }
 }

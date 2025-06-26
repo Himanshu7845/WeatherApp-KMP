@@ -23,13 +23,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weather.weatherapp.ui.permission.AndroidLocationService
 import com.weather.weatherapp.ui.view_models.WeatherViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -47,17 +45,13 @@ class MainActivity : ComponentActivity() {
                     val viewModel = koinViewModel<WeatherViewModel>()
                     var locationService by remember { mutableStateOf<AndroidLocationService?>(null) }
                     val scope = rememberCoroutineScope()
-
-                    val permission =
-                        rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission()) { bool ->
+                    val permission = rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission()) { bool ->
                             if (bool) {
                                 scope.launch(Dispatchers.IO) {
                                     val location = locationService?.getLocation()
                                     location?.let {
                                         latitude.doubleValue=it.latitude
                                         longitude.doubleValue=it.longitude
-
-
                                     }
                                 }
                             }
@@ -65,7 +59,6 @@ class MainActivity : ComponentActivity() {
 
                     LaunchedEffect(latitude.doubleValue) {
                         if(latitude.doubleValue!=0.0 && longitude.doubleValue!=0.0){
-                            delay(4000)
                             viewModel.getWeather(latitude.doubleValue,longitude.doubleValue)
                         }
                     }
