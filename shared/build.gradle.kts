@@ -52,6 +52,9 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(kotlin("test"))
+            implementation(libs.turbine) // For Flow testing
+            implementation(libs.kotlinx.coroutines.test)
         }
 
     }

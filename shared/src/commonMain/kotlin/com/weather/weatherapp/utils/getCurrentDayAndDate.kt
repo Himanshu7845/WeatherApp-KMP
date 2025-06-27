@@ -10,12 +10,12 @@ fun getCurrentDayAndDate(): String {
     val date = dateTime.date
 
     val dayOfWeek = date.dayOfWeek.name.lowercase()
-        .replaceFirstChar { it.uppercase() } // e.g. "Thursday"
+        .replaceFirstChar { it.uppercase() }
 
-    val day = date.dayOfMonth.toString().padStart(2, '0') // e.g. "26"
+    val day = date.dayOfMonth.toString().padStart(2, '0')
 
     val month = date.month.name.lowercase()
-        .replaceFirstChar { it.uppercase() } // e.g. "July"
+        .replaceFirstChar { it.uppercase() }
 
     val year = date.year
 

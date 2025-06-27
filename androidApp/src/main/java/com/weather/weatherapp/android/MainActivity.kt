@@ -7,7 +7,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -131,7 +130,6 @@ fun WeatherUi(weatherState: State<UiState>, cityName: String?,onRetryNetworkCall
             CircularProgressIndicator(color = Color.Black)
         }
     }
-
     weatherState.value.data?.let {
         WeatherDetails(
             cityName = cityName,
@@ -141,7 +139,6 @@ fun WeatherUi(weatherState: State<UiState>, cityName: String?,onRetryNetworkCall
             windDirection = it.currentWeather?.winddirection
         )
     }
-
     weatherState.value.dataFromLocal?.let {
         if (it.isNotEmpty()) {
             WeatherDetails(

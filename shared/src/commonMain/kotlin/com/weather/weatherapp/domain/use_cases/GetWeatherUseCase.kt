@@ -8,28 +8,27 @@ import com.weather.weatherapp.utils.RestClientResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class GetWeatherUseCase(private val weatherRepository: WeatherRepository,private val weatherLocalDataRepository: WeatherLocalDataRepository) {
+open class GetWeatherUseCase(private val weatherRepository: WeatherRepository, private val weatherLocalDataRepository: WeatherLocalDataRepository) {
 
     /** get weather details API call. */
-     fun getWeather(lat: Double, lon: Double): Flow<RestClientResult<WeatherResponse?>> =
-        flow {
+    open fun getWeather(lat: Double, lon: Double): Flow<RestClientResult<WeatherResponse?>> = flow {
             emit(RestClientResult.loading())
             emit(weatherRepository.getWeather(lat,lon))
             emit(RestClientResult.idle())
         }
 
     /** insert weather details from local database. */
-    suspend fun insertWeatherDataInRoom(entity: WeatherEntity): Long {
+    open  suspend fun insertWeatherDataInRoom(entity: WeatherEntity): Long {
         return weatherLocalDataRepository.insertGrowth(entity)
 
     }
     /** clear weather details from local database. */
-    suspend fun clearData() {
+    open  suspend fun clearData() {
         return weatherLocalDataRepository.clearDataBase()
     }
 
     /** get weather details from local database. */
-    suspend fun getWeatherDetailsFromLocal(): Flow<List<WeatherEntity>> {
+    open  suspend fun getWeatherDetailsFromLocal(): Flow<List<WeatherEntity>> {
         return weatherLocalDataRepository.fetchWeather()
     }
 }
