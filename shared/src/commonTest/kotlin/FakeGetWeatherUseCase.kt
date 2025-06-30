@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.flowOf
 
 class FakeGetWeatherUseCase(
     private val remoteResult: Flow<RestClientResult<WeatherResponse?>> = flowOf(),
-    private val localResult: Flow<List<WeatherEntity>> = flowOf()
+    private val localResult: Flow<WeatherEntity> = flowOf()
 ) : GetWeatherUseCase(
     weatherRepository = DummyWeatherRepository(remoteResult),
     weatherLocalDataRepository = DummyLocalRepository(localResult)
@@ -25,7 +25,7 @@ class DummyWeatherRepository(
     }
 }
 class DummyLocalRepository(
-    private val localResult: Flow<List<WeatherEntity>>
+    private val localResult: Flow<WeatherEntity>
 ) : com.weather.weatherapp.domain.repository.WeatherLocalDataRepository {
     var insertCalled = false
     var clearCalled = false
@@ -39,7 +39,7 @@ class DummyLocalRepository(
         clearCalled = true
     }
 
-    override suspend fun fetchWeather(): Flow<List<WeatherEntity>> {
+    override suspend fun fetchWeather(): Flow<WeatherEntity> {
         return localResult
     }
 }

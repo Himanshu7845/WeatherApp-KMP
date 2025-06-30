@@ -28,7 +28,8 @@ open class GetWeatherUseCase(private val weatherRepository: WeatherRepository, p
     }
 
     /** get weather details from local database. */
-    open  suspend fun getWeatherDetailsFromLocal(): Flow<List<WeatherEntity>> {
+    open  suspend fun getWeatherDetailsFromLocal(): Flow<WeatherEntity?> {
         return weatherLocalDataRepository.fetchWeather()
     }
+
 }

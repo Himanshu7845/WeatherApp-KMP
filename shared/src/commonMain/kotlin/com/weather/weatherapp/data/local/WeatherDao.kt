@@ -11,8 +11,8 @@ interface WeatherDao {
     @Insert
     suspend fun insertWeatherData(weatherEntity: WeatherEntity):Long
 
-    @Query("select * from Weather")
-    fun fetchWeather(): Flow<List<WeatherEntity>>
+    @Query("SELECT * FROM Weather LIMIT 1")
+    fun fetchWeather(): Flow<WeatherEntity?>
 
     @Query("Delete from Weather")
     suspend fun clearDataBase()

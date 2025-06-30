@@ -1,4 +1,4 @@
-package com.weather.weatherapp.android
+package com.weather.weatherapp.android.presentation
 
 import android.Manifest
 import android.os.Bundle
@@ -46,13 +46,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.weather.weatherapp.android.MyApplicationTheme
+import com.weather.weatherapp.android.R
 import com.weather.weatherapp.ui.permission.AndroidLocationService
 import com.weather.weatherapp.ui.permission.getCityNameFromLatLng
 import com.weather.weatherapp.ui.view_models.UiState
 import com.weather.weatherapp.ui.view_models.WeatherViewModel
-import com.weather.weatherapp.ui.view_models.getWeatherTypeFromCode
 import com.weather.weatherapp.utils.NetworkErrorMessages.NO_INTERNET_CONNECTION
 import com.weather.weatherapp.utils.getCurrentDayAndDate
+import com.weather.weatherapp.utils.getWeatherTypeFromCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -90,7 +92,11 @@ class MainActivity : ComponentActivity() {
 
                     LaunchedEffect(Unit) {
                         snapshotFlow {
-                            Triple(latitude.doubleValue, longitude.doubleValue, onRetryNetworkCall.value)
+                            Triple(
+                                latitude.doubleValue,
+                                longitude.doubleValue,
+                                onRetryNetworkCall.value
+                            )
                         }.collectLatest { (lat, lng, shouldRetry) ->
                             if (lat != 0.0 && lng != 0.0 && (shouldRetry || cityName.value.isNullOrEmpty())) {
                                 cityName.value = getCityNameFromLatLng(this@MainActivity, lat, lng)
@@ -111,7 +117,7 @@ class MainActivity : ComponentActivity() {
                         uiState,
                         cityName.value,
                         onRetryNetworkCall = {
-                            onRetryNetworkCall.value=true
+                            onRetryNetworkCall.value = true
                         }
                     )
 
@@ -133,23 +139,11 @@ fun WeatherUi(weatherState: State<UiState>, cityName: String?,onRetryNetworkCall
     weatherState.value.data?.let {
         WeatherDetails(
             cityName = cityName,
-            temperature = it.currentWeather?.temperature,
-            weatherCode = it.currentWeather?.weathercode,
-            windSpeed = it.currentWeather?.windspeed,
-            windDirection = it.currentWeather?.winddirection
+            temperature = it.temperature,
+            weatherCode = it.weatherCode,
+            windSpeed = it.windSpeed,
+            windDirection = it.windDirection
         )
-    }
-    weatherState.value.dataFromLocal?.let {
-        if (it.isNotEmpty()) {
-            WeatherDetails(
-                cityName = cityName,
-                temperature = it[0].temperature,
-                weatherCode = it[0].weatherCode,
-                windSpeed = it[0].windSpeed,
-                windDirection = it[0].windDirection
-            )
-
-        }
     }
     if (weatherState.value.error.isNotEmpty()) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

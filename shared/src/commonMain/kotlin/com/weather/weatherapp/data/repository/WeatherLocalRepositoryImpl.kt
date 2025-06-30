@@ -11,7 +11,7 @@ class WeatherLocalRepositoryImpl(private val weatherDao: WeatherDao): WeatherLoc
        return weatherDao.insertWeatherData(entity)
     }
 
-    override suspend fun fetchWeather(): Flow<List<WeatherEntity>> {
+    override suspend fun fetchWeather(): Flow<WeatherEntity?> {
         return  weatherDao.fetchWeather()
 
     }
