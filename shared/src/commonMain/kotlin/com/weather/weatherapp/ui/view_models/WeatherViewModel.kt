@@ -8,10 +8,13 @@ import com.weather.weatherapp.domain.use_cases.GetWeatherUseCase
 import com.weather.weatherapp.utils.NetworkErrorMessages.NO_INTERNET_CONNECTION
 import com.weather.weatherapp.utils.RestClientResult
 import com.weather.weatherapp.utils.common
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
@@ -25,7 +28,7 @@ class WeatherViewModel(
 
     fun getWeather(lat: Double, lon: Double, cityName: String?)  {
        viewModelScope.launch {
-           getWeatherUseCase.getWeather(lat,lon).collect { result ->
+           getWeatherUseCase.getWeather(lat,lon).flowOn(Dispatchers.IO).collect { result ->
                when (result.status) {
                    RestClientResult.Status.LOADING -> {
                        _uiState.value = _uiState.value.copy(isLoading = true,error="")
@@ -51,7 +54,7 @@ class WeatherViewModel(
                    RestClientResult.Status.ERROR -> {
                        if (!result.errorMessage.isNullOrEmpty()) {
                            if(result.errorMessage==NO_INTERNET_CONNECTION){
-                               getWeatherUseCase.getWeatherDetailsFromLocal().onStart {
+                               getWeatherUseCase.getWeatherDetailsFromLocal().flowOn(Dispatchers.IO).onStart {
                                    _uiState.value = _uiState.value.copy(isLoading = true,error="")
                                }.onEach {
                                    println("IT va;lue==$it")
